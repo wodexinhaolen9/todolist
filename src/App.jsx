@@ -1,25 +1,55 @@
-import logo from './logo.svg';
-import './App.css';
+import './App.css'
+import './components/event.css'
+import './components/task.css'
+import React from 'react'
+import EventBar from './components/EventBar'
+import TaskBox from './components/TaskBox'
 
-function App() {
+function App () {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const initEvent = [
+    {
+      title: 'Add a new Event',
+      'To do': [],
+      'In progress': [],
+      'Completed': [],
+    },
+  ]
+
+  const [events, setEvents] = React.useState(() => {
+    return localStorage.getItem('events')
+      ? JSON.parse(localStorage.getItem('events'))
+      : initEvent
+  })
+
+  const [currentEvent, setCurrentEvent] = React.useState(events[0])
+
+  // Set localStorage
+  React.useEffect(() => {
+    if (!events.length) {
+      localStorage.setItem('events', JSON.stringify(initEvent))
+      setEvents(JSON.parse(localStorage.getItem('events')))
+    } else {
+      localStorage.setItem('events', JSON.stringify(events))
+    }
+  }, [events, initEvent])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <EventBar
+        events={events}
+        setEvents={setEvents}
+        currentEvent={currentEvent}
+        setCurrentEvent={setCurrentEvent}
+      />
+      <TaskBox
+        events={events}
+        setEvents={setEvents}
+        currentEvent={currentEvent}
+        setCurrentEvent={setCurrentEvent}
+      />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
